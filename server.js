@@ -1,11 +1,11 @@
 // Twilio config.
 var twilioAccountSID = 'AC017f38a2339d6a5134f7a3e900068640';
 var twilioAuthToken = '861984045630765a5250be9033b2a1a4';
-var twilioNumber = '+16502784972';
+var twilioNumber = '+16508351257';
 
 // Firebase config.
 var firebaseServiceAccount = 'serverAccountCredentials.json'; 
-var firebaseDatabaseUrl = 'https://project1-47c7a.firebaseio.com';
+var firebaseDatabaseUrl = 'https://gomix-sms-client-wait-eat.firebaseio.com';
 
 // // Mailgun config.
 // var mailgunApiKey = '';
@@ -20,7 +20,7 @@ var twilio = require('twilio');
 
 // Express server setup.
 var router = express();
-var server = http.createServer(router);
+var server = http.createServer(router); //no routes, only a server process to montior textmessagesRef table record adding
 var twilioClient = twilio(twilioAccountSID, twilioAuthToken);
 
 // Initialize Firebase.
@@ -40,7 +40,7 @@ textMessagesRef.on("child_added", function(snapshot) {
   var textMessageKey = snapshot.key;
   var textMessage = snapshot.val();
   twilioClient.messages.create({
-    body: 'FROM Heroku: ' + 'Hi ' + textMessage.name + '! Your table for ' + textMessage.size + ' is now ready!',
+    body: 'FROM HyperDev: ' + 'Hi ' + textMessage.name + '! Your table for ' + textMessage.size + ' is now ready!',
     to: textMessage.phoneNumber,
     from: twilioNumber
   }, function(err, message) {
@@ -74,7 +74,6 @@ textMessagesRef.on("child_added", function(snapshot) {
 //     }
 //   });
 // });
-
 
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
