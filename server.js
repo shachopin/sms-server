@@ -40,7 +40,7 @@ textMessagesRef.on("child_added", function(snapshot) {
   var textMessageKey = snapshot.key;
   var textMessage = snapshot.val();
   twilioClient.messages.create({
-    body: 'FROM HyperDev: ' + 'Hi ' + textMessage.name + '! Your table for ' + textMessage.size + ' is now ready!',
+    body: 'FROM Heroku: ' + 'Hi ' + textMessage.name + '! Your table for ' + textMessage.size + ' is now ready!',
     to: textMessage.phoneNumber,
     from: twilioNumber
   }, function(err, message) {
