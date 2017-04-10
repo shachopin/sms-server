@@ -23,6 +23,19 @@ var router = express();
 var server = http.createServer(router); //no routes, only a server process to montior textmessagesRef table record adding
 var twilioClient = twilio(twilioAccountSID, twilioAuthToken);
 
+// To keep your heroku free app from idling, so that it can continue process your SMS messages
+//keep awake js way
+//This is by far the easiest to implement. 
+//Just create a normal JavaScript setInterval 
+//that pings your app every 5 minutes. 
+//Place this is any file that’s executed in your app. 
+//I used Node’s http library to do it:
+
+//var http = require("http");  //already set
+setInterval(function() {
+    http.get("https://dawei-sms-server.herokuapp.com/");
+}, 100000); // every 5 minutes (300000)
+
 // Initialize Firebase.
 firebase.initializeApp({
   serviceAccount: firebaseServiceAccount,
