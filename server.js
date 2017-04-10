@@ -34,7 +34,7 @@ var twilioClient = twilio(twilioAccountSID, twilioAuthToken);
 //var http = require("http");  //already set
 setInterval(function() {
     http.get("https://dawei-sms-server.herokuapp.com/");
-}, 100000); // every 5 minutes (300000)
+}, 1000); // every 5 minutes (300000)
 
 // Initialize Firebase.
 firebase.initializeApp({
