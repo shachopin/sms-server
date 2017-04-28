@@ -28,7 +28,7 @@ var mailgun = require('mailgun-js')({apiKey: mailgunApiKey, domain: mailgunDomai
 
 //var http = require("http");  //already set
 setInterval(function() {
-    http.get("http://sms-server-wait-eat.glitch.me/"); //notice it has to be http, not https
+    http.get("http://dawei-sms-server.herokuapp.com/"); //notice it has to be http, not https
 }, 1000); // every 5 minutes (300000)
 
 // Express server setup.
