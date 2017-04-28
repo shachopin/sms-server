@@ -7,21 +7,16 @@ var twilioNumber = '+16508351257';
 var firebaseServiceAccount = 'serverAccountCredentials.json'; 
 var firebaseDatabaseUrl = 'https://gomix-sms-client-wait-eat.firebaseio.com';
 
-// // Mailgun config.
-// var mailgunApiKey = '';
-// var mailgunDomain = '';
+// Mailgun config.
+ var mailgunApiKey = 'key-1b230376b79c89987e4b810df76a7ced';
+ var mailgunDomain = 'sandbox2c6dc3c01b3044d181e077d8342d99a8.mailgun.org';
 
 // Create references for libraries.
 var express = require('express');
 var http = require('http');
 var firebase = require('firebase');
 var twilio = require('twilio');
-// var mailgun = require('mailgun-js')({apiKey: mailgunApiKey, domain: mailgunDomain});
-
-// Express server setup.
-var router = express();
-var server = http.createServer(router); //no routes, only a server process to montior textmessagesRef table record adding
-var twilioClient = twilio(twilioAccountSID, twilioAuthToken);
+var mailgun = require('mailgun-js')({apiKey: mailgunApiKey, domain: mailgunDomain});
 
 // To keep your heroku free app from idling, so that it can continue process your SMS messages
 //keep awake js way
@@ -33,8 +28,13 @@ var twilioClient = twilio(twilioAccountSID, twilioAuthToken);
 
 //var http = require("http");  //already set
 setInterval(function() {
-    http.get("http://dawei-sms-server.herokuapp.com/"); //it has to be http, not https
+    http.get("http://sms-server-wait-eat.glitch.me/"); //notice it has to be http, not https
 }, 1000); // every 5 minutes (300000)
+
+// Express server setup.
+var router = express();
+var server = http.createServer(router); //no routes, only a server process to montior textmessagesRef table record adding
+var twilioClient = twilio(twilioAccountSID, twilioAuthToken);
 
 // Initialize Firebase.
 firebase.initializeApp({
@@ -53,7 +53,7 @@ textMessagesRef.on("child_added", function(snapshot) {
   var textMessageKey = snapshot.key;
   var textMessage = snapshot.val();
   twilioClient.messages.create({
-    body: 'FROM Heroku: ' + 'Hi ' + textMessage.name + '! Your table for ' + textMessage.size + ' is now ready!',
+    body: 'FROM HyperDev: ' + 'Hi ' + textMessage.name + '! Your table for ' + textMessage.size + ' is now ready!',
     to: textMessage.phoneNumber,
     from: twilioNumber
   }, function(err, message) {
@@ -67,26 +67,26 @@ textMessagesRef.on("child_added", function(snapshot) {
 });
 
 // // Create a reference to emails.
-// var emailsRef = db.ref('emails');
+ var emailsRef = db.ref('emails');
 
 // // Listen for new objects pushed to emailsRef.
-// emailsRef.on("child_added", function(snapshot) {
-//   var email = snapshot.val();
-//   var emailKey = snapshot.key;
-//   var emailData = {
-//     from: '<postmaster@'  + mailgunDomain + '>',
-//     to: email.emailAddress,
-//     subject: 'Welcome to Wait and Eat',
-//     text: 'Thanks for signing up for Wait and Eat!'
-//   };
-//   mailgun.messages().send(emailData, function(error, body) {
-//     console.log(body);
-//     emailsRef.child(emailKey).remove();
-//     if (error) {
-//       console.log(error);
-//     }
-//   });
-// });
+emailsRef.on("child_added", function(snapshot) {
+  var email = snapshot.val();
+  var emailKey = snapshot.key;
+  var emailData = {
+    from: '<postmaster@'  + mailgunDomain + '>',
+    to: email.emailAddress,
+    subject: 'Welcome to Wait and Eat',
+    text: 'Thanks for signing up for Wait and Eat!'
+  };
+  mailgun.messages().send(emailData, function(error, body) {
+    console.log(body);
+    emailsRef.child(emailKey).remove();
+    if (error) {
+      console.log(error);
+    }
+  });
+});
 
 server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
   var addr = server.address();
